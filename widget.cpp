@@ -50,6 +50,9 @@ Widget::Widget(QWidget *parent) :
     setProperty("Yarrr", 100500);
     dump_props(this);
 
+    ui->tableView->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+
     ui->tableView->setModel(new PropModel(this, ui->tableView));
 }
 

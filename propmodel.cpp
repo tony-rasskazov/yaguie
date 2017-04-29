@@ -43,7 +43,7 @@ QModelIndex PropModel::index(int row, int column, const QModelIndex &parent) con
 
 
 //    qDebug() << "PropModel::index createIndex" << row << column << parent;
-    return createIndex(row, column, row);
+    return createIndex(row, column);
 }
 
 QModelIndex PropModel::parent(const QModelIndex &index) const
@@ -54,7 +54,7 @@ QModelIndex PropModel::parent(const QModelIndex &index) const
 
 int PropModel::rowCount(const QModelIndex &parent) const
 {
-    qDebug() << "PropModel::rowCount" << parent;
+//    qDebug() << "PropModel::rowCount" << parent;
 
     if (!parent.isValid()) {
         auto mo = _obj->metaObject();
@@ -97,7 +97,7 @@ QVariant PropModel::data(const QModelIndex &index, int role) const
         return mo->property(index.row()).name();
         break;
     case 1:
-        return mo->property(index.row()).read(this);
+        return mo->property(index.row()).read(_obj);
         break;
     case 2:
         return mo->property(index.row()).typeName();
@@ -119,9 +119,11 @@ bool PropModel::setData(const QModelIndex &index, const QVariant &value, int rol
 
 Qt::ItemFlags PropModel::flags(const QModelIndex &index) const
 {
-//    qDebug() << "PropModel::flags" << index;
-    if (!index.isValid())
-        return Qt::NoItemFlags;
 
-    return Qt::ItemIsSelectable;// Editable; // FIXME: Implement me!
+    Qt::ItemFlags flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+
+
+    if (index.column() == 1)
+        flags |= Qt::ItemIsEditable;
+    return flags;
 }
