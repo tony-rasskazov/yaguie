@@ -25,9 +25,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp\
         widget.cpp \
-    propmodel.cpp
+    propmodel.cpp \
+    propertydelegate.cpp \
+    varianthelper.cpp \
+    exvariant.cpp
+
 
 HEADERS  += widget.h \
-    propmodel.h
+    propmodel.h \
+    propertydelegate.h \
+    varianthelper.h \
+    exvariant.h
 
 FORMS    += widget.ui

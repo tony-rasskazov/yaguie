@@ -29,6 +29,8 @@ public:
 
 private:
     QObject *_obj;
+    QList<QVariant> _headers;
+
 };
 
 #endif // PROPMODEL_H

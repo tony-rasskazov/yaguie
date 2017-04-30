@@ -9,6 +9,7 @@
 #include <algorithm>
 
 #include "propmodel.h"
+#include "propertydelegate.h"
 
 static void dump_props(QObject *o)
 {
@@ -52,6 +53,8 @@ Widget::Widget(QWidget *parent) :
 
     ui->tableView->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+
+    ui->tableView->setItemDelegate(new PropertyDelegate(ui->tableView));
 
     ui->tableView->setModel(new PropModel(this, ui->tableView));
 }

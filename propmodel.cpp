@@ -13,6 +13,8 @@ PropModel::PropModel(QObject *target, QObject *parent)
     : QAbstractItemModel(parent)
     , _obj(target)
 {
+    _headers << "name" << "value" << "typeName" << "typeId" << "flags";
+
 }
 
 QVariant PropModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -20,11 +22,7 @@ QVariant PropModel::headerData(int section, Qt::Orientation orientation, int rol
 
     if (role != Qt::DisplayRole || orientation != Qt::Horizontal) return QVariant();
 
-//    qDebug() << "PropModel::headerData" << section << role << orientation;
-
-    QList<QVariant> h;
-    h << "name" << "value" << "type";
-    return h.at(section);
+    return _headers.at(section);
 }
 
 QModelIndex PropModel::index(int row, int column, const QModelIndex &parent) const
@@ -32,8 +30,8 @@ QModelIndex PropModel::index(int row, int column, const QModelIndex &parent) con
 //    qDebug() << "PropModel::index" << row << column << parent;
 
     //if ( !(RANGE(column, 0, 2)) )
-    if (column < 0 || column > 2 )
-        return QModelIndex();
+//    if (column < 0 || column > 2 )
+//        return QModelIndex();
 
     auto mo = _obj->metaObject();
 
@@ -71,7 +69,7 @@ int PropModel::columnCount(const QModelIndex &parent) const
 //    if (!parent.isValid())
 //        return 0;
 
-    return 3;
+    return _headers.count();
 }
 
 QVariant PropModel::data(const QModelIndex &index, int role) const
@@ -92,16 +90,42 @@ QVariant PropModel::data(const QModelIndex &index, int role) const
     //if ( !RANGE(index.row(), 0, mo->propertyCount()) )
     //    return QVariant();
 
+    QMetaProperty mp = mo->property(index.row());
+
     switch (index.column()) {
     case 0:
-        return mo->property(index.row()).name();
+        return mp.name();
         break;
     case 1:
-        return mo->property(index.row()).read(_obj);
+        return mp.read(_obj);
         break;
     case 2:
-        return mo->property(index.row()).typeName();
+        return mp.typeName();
         break;
+    case 3:
+        return (uint)mp.type();
+        break;
+    case 4: {
+        QString flags;
+
+        flags += mp.isConstant() ? "C" : "";
+        flags += mp.isDesignable() ? "D" : "";
+        flags += mp.isEditable() ? "E" : "";
+        flags += mp.isEnumType() ? "e" : "";
+        flags += mp.isFinal() ? "F" : "";
+        flags += mp.isFlagType() ? "f" : "";
+        flags += mp.isReadable() ? "R" : "";
+        flags += mp.isResettable() ? "r" : "";
+        flags += mp.isScriptable() ? "S" : "";
+        flags += mp.isStored() ? "s" : "";
+        flags += mp.isUser() ? "U" : "";
+        flags += mp.isValid() ? "V" : "";
+        flags += mp.isWritable() ? "W" : "";
+
+        return flags;
+    } break;
+    default:
+        return "";//QVariant();
     }
     return QVariant();
 }
