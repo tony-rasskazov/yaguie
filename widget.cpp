@@ -56,6 +56,8 @@ Widget::Widget(QWidget *parent) :
 
     ui->tableView->setItemDelegate(new PropertyDelegate(ui->tableView));
 
+
+    //setBaseSize(QSize(100, 100));
     ui->tableView->setModel(new PropModel(this, ui->tableView));
 }
 

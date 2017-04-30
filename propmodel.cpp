@@ -7,6 +7,8 @@
 
 #include <QDebug>
 
+#include "exvariant.h"
+
 #define RANGE(i, min, max) (i <= min) || (i >= max) ? 1 : 0
 
 PropModel::PropModel(QObject *target, QObject *parent)
@@ -96,10 +98,12 @@ QVariant PropModel::data(const QModelIndex &index, int role) const
     case 0:
         return mp.name();
         break;
-    case 1:
-//        return mp.read(_obj);
-        return _obj->property(mp.name());
-        break;
+    case 1: {
+
+        return QVariant(mp.read(_obj));
+//        return ExVariant(mp.read(_obj)).toString();
+        //return _obj->property(mp.name());
+    } break;
     case 2:
         return mp.typeName();
         break;
@@ -122,6 +126,7 @@ QVariant PropModel::data(const QModelIndex &index, int role) const
         flags += mp.isUser() ? "U" : "";
         flags += mp.isValid() ? "V" : "";
         flags += mp.isWritable() ? "W" : "";
+        flags += mp.read(_obj).isNull() ? "N" : "";
 
         return flags;
 
