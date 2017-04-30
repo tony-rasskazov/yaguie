@@ -13,7 +13,7 @@ PropModel::PropModel(QObject *target, QObject *parent)
     : QAbstractItemModel(parent)
     , _obj(target)
 {
-    _headers << "name" << "value" << "typeName" << "typeId" << "flags";
+    _headers << "name" << "value" << "typeName" << "typeId" << "flags" << "revision";
 
 }
 
@@ -97,7 +97,8 @@ QVariant PropModel::data(const QModelIndex &index, int role) const
         return mp.name();
         break;
     case 1:
-        return mp.read(_obj);
+//        return mp.read(_obj);
+        return _obj->property(mp.name());
         break;
     case 2:
         return mp.typeName();
@@ -123,9 +124,13 @@ QVariant PropModel::data(const QModelIndex &index, int role) const
         flags += mp.isWritable() ? "W" : "";
 
         return flags;
+
     } break;
+    case 5:
+        return mp.revision();
+        break;
     default:
-        return "";//QVariant();
+        return QVariant();
     }
     return QVariant();
 }
